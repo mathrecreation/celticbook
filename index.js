@@ -57,9 +57,9 @@ function shift(list){
 function flip(list){
     let flipped = [];
     for (var i of list){
-        if (i==0){
+        if (i===0){
             flipped.push(0)
-        } else if (i == 1){
+        } else if (i === 1){
             flipped.push(2);
         } else {
             flipped.push(1);
@@ -75,7 +75,7 @@ function rotate(list){
 function allRotations(list){
     let rotations = [];
     let lastRotation = list.slice();
-    for (let i = 0; i < 3; i++){
+    for (let i = 0; i < 4; i++){
       lastRotation = rotate(lastRotation);
      if (same(lastRotation,list)){
          continue;
@@ -98,21 +98,27 @@ for (var a in [0,1,2]) {
         for (var c in [0,1,2]) {
             for (var d in [0,1,2]) {
                 let candidate = [a,b,c,d];
+                console.log("testing " + candidate);
                 let rotations = allRotations(candidate);
+                let duplicateFound = false;
                 for (let i = 0; i < rotations.length; i++){
                     let r = rotations[i];
-                    if (listInListOfLists(r, exclude)){
-                        continue;
+                    if (listInListOfLists(r, keep)){
+                        console.log("found rotation: " + r);
+                        duplicateFound=true;
                     }
                 }
-                if (listInListOfLists(candidate, keep)) {
+                if (!duplicateFound){
+                    keep.push(coerce(candidate));
+                }
+                /*if (listInListOfLists(candidate, keep)) {
                     continue;
                 } else {
                     keep.push(coerce(candidate));
                 }
-                for (let i = 0; i < rotations.length; i++){
+                    for (let i = 0; i < rotations.length; i++){
                     exclude.push(rotations[i]);
-                }
+                }*/
             }
         }
     }
@@ -195,5 +201,4 @@ fs.writeFile(mainFile, mainDoc.build(), function(err) {
         process.exit(1);
     }
 });
-
 

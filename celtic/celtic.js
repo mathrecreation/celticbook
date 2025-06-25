@@ -188,7 +188,7 @@ class LaTeXDoc {
     }
 
     frontMatter(){
-        let fm = "\\documentclass{" + this.documentclass + "}\n";
+        let fm = ""; //\\documentclass{" + this.documentclass + "}\n";
         for (let i in this.packages){
             fm += this.packages[i].build() + "\n";
         }
