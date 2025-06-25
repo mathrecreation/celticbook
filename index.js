@@ -85,7 +85,7 @@ function vreflect4(list){
     return vreflected;
 }
 function allReflections(list){
-    return [hreflect4(list), vreflect4(list)];
+    return allRotations(hreflect4(list)).concat(allRotations(vreflect4(list)));
 }
 
 // rotates a celtic cell signature by shift and flip
