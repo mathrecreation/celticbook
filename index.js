@@ -18,7 +18,7 @@ function getTimestamp () {
  */
 
 function same(list1, list2) {
-    return (list1.sort().join(',')=== list2.sort().join(','));
+    return (list1.join(',')=== list2.join(','));
 }
 
 function signature(list){
@@ -99,37 +99,35 @@ let keep = []; // the signatures to keep
 let exclude = []; // the rotated variants
 
 // generate all signatures excluding rotated versions
+let allTuples= [];
 for (var a in [0,1,2]) {
     for (var b in [0,1,2]) {
         for (var c in [0,1,2]) {
             for (var d in [0,1,2]) {
-                let candidate = [a,b,c,d];
-                console.log("testing " + candidate);
-                let rotations = allRotations(candidate.slice());
-                console.log(" - for " + candidate +" rotations are: " + printListOfLists(rotations));
-                let duplicateFound = false;
-                for (let i = 0; i < rotations.length; i++){
-                    let r = rotations[i];
-                    if (listInListOfLists(r, keep)){
-                        console.log(" -- for " + candidate + ", found rotation: " + r);
-                        duplicateFound=true;
-                        break;
-                    }
-                }
-                if (!duplicateFound && !listInListOfLists(candidate, keep)){
-                    keep.push(coerce(candidate));
-                }
-                /*if (listInListOfLists(candidate, keep)) {
-                    continue;
-                } else {
-                    keep.push(coerce(candidate));
-                }
-                    for (let i = 0; i < rotations.length; i++){
-                    exclude.push(rotations[i]);
-                }*/
+                allTuples.push([a,b,c,d]);
             }
         }
     }
+}
+console.log("total possible tuples: " + allTuples.length);
+for (let i = 0; i < allTuples.length; i++){
+    let candidate = allTuples[i];
+    console.log("testing " + candidate);
+    let rotations = allRotations(candidate.slice());
+    console.log(" - for " + candidate +" rotations are: " + printListOfLists(rotations));
+    let duplicateFound = false;
+    for (let i = 0; i < rotations.length; i++){
+        let r = rotations[i];
+        if (listInListOfLists(r, keep)){
+            console.log(" -- for " + candidate + ", found rotation: " + r);
+            duplicateFound=true;
+            break;
+        }
+    }
+    if (!duplicateFound && !listInListOfLists(candidate, keep)){
+        keep.push(coerce(candidate));
+    }
+
 }
 
 console.log(keep.length)
