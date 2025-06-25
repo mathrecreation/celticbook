@@ -29,6 +29,14 @@ function signature(list){
     return string;
 }
 
+function printListOfLists(lists){
+    let string = " | ";
+    for (let i = 0; i < lists.length; i++) {
+        string += lists[i] + " | ";
+    }
+    return string;
+}
+
 function listInListOfLists(list, listOfLists){
     for (let i = 0; i < listOfLists.length; i++){
         let listFromList = listOfLists[i];
@@ -99,12 +107,13 @@ for (var a in [0,1,2]) {
             for (var d in [0,1,2]) {
                 let candidate = [a,b,c,d];
                 console.log("testing " + candidate);
-                let rotations = allRotations(candidate);
+                let rotations = allRotations(coerce(candidate));
+                console.log(" - for " + candidate +" rotations are: " + printListOfLists(rotations));
                 let duplicateFound = false;
                 for (let i = 0; i < rotations.length; i++){
                     let r = rotations[i];
                     if (listInListOfLists(r, keep)){
-                        console.log("found rotation: " + r);
+                        console.log(" -- for " + candidate + ", found rotation: " + r);
                         duplicateFound=true;
                     }
                 }
@@ -140,21 +149,21 @@ function twoXtwoLaTeX(fourTuple){
     }
     let second = fourTuple[1];
     if (second === 1){
-        grid.from(0,2).to(2,2);
+        grid.from(2,2).to(4,2);
     } else if (second === 2){
-        grid.from(1,1).to(1,3);
+        grid.from(3,1).to(3,3);
     }
     let third = fourTuple[2];
     if (third === 1){
-        grid.from(2,2).to(4,2);
+        grid.from(1,3).to(3,3);
     } else if (third === 2){
-        grid.from(3,1).to(3,3);
+        grid.from(2,2).to(2,4);
     }
     let fourth = fourTuple[3];
     if (fourth === 1){
-        grid.from(1,3).to(3,3);
+        grid.from(0,2).to(2,2);
     } else if (fourth === 2){
-        grid.from(2,2).to(2,4);
+        grid.from(1,1).to(1,3);
     }
     let knotDisplay = new celtic.PositiveKnotDisplay(grid, 20, 'white', 'darkblue');
     knotDisplay.init();
@@ -204,3 +213,5 @@ fs.writeFile(mainFile, mainDoc.build(), function(err) {
     }
 });
 
+let test =  [1,2,2,2];
+console.log("for test: " + test + " rotation: " + rotate(test));
