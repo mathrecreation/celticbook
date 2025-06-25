@@ -108,7 +108,7 @@ for (var a in [0,1,2]) {
                         duplicateFound=true;
                     }
                 }
-                if (!duplicateFound){
+                if (!duplicateFound && !listInListOfLists(candidate, keep)){
                     keep.push(coerce(candidate));
                 }
                 /*if (listInListOfLists(candidate, keep)) {
@@ -123,6 +123,8 @@ for (var a in [0,1,2]) {
         }
     }
 }
+
+console.log(keep.length)
 
 // generate 2x2 cell from its signature
 function twoXtwoLaTeX(fourTuple){
