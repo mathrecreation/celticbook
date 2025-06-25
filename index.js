@@ -81,7 +81,7 @@ function hreflect4(list){
     return hreflected;
 }
 function vreflect4(list){
-    let vreflected =[list[0],list[3],list[3],list[1]];
+    let vreflected =[list[0],list[3],list[2],list[1]];
     return vreflected;
 }
 function allReflections(list){
@@ -153,12 +153,13 @@ for (let i = 0; i < keep.length; i++){
     for (let i = 0; i < reflections.length; i++){
         let r = reflections[i];
         if (listInListOfLists(r, reflectsRemoved)){
-            console.log(" -- for " + candidate + ", found rotation: " + r);
+            console.log(" -- for " + candidate + ", found reflection: " + r);
             duplicateFound=true;
             break;
         }
     }
     if (!duplicateFound && !listInListOfLists(candidate, reflectsRemoved)){
+        console.log("--- adding " +candidate );
         reflectsRemoved.push(coerce(candidate));
     }
 }
