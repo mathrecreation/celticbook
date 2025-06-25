@@ -56,15 +56,16 @@ function coerce(list){
 }
 // shifts a list so that the head is after the tail
 function shift(list){
-    let toShift = list.slice();
+    let toShift = coerce(list.slice());
     let popped = toShift.pop();
     toShift.unshift(popped);
     return toShift;
 }
 // flips all horizontals (1) to verticals (2)
 function flip(list){
+    let start = coerce(list.slice());
     let flipped = [];
-    for (var i of list){
+    for (var i of start){
         if (i===0){
             flipped.push(0)
         } else if (i === 1){
@@ -81,15 +82,12 @@ function rotate(list){
 }
 // generates all other rotations of a given signature
 function allRotations(list){
-    let rotations = [];
-    let lastRotation = list.slice();
-    for (let i = 0; i < 4; i++){
-      lastRotation = rotate(lastRotation);
-     if (same(lastRotation,list)){
-         continue;
-     }
-        rotations.push(lastRotation);
-    }
+    let rotations = [
+        list,
+        rotate(list),
+        rotate(rotate(list)),
+        rotate(rotate(rotate(list)))
+    ]
     return rotations;
 }
 
@@ -107,7 +105,7 @@ for (var a in [0,1,2]) {
             for (var d in [0,1,2]) {
                 let candidate = [a,b,c,d];
                 console.log("testing " + candidate);
-                let rotations = allRotations(coerce(candidate));
+                let rotations = allRotations(candidate.slice());
                 console.log(" - for " + candidate +" rotations are: " + printListOfLists(rotations));
                 let duplicateFound = false;
                 for (let i = 0; i < rotations.length; i++){
@@ -115,6 +113,7 @@ for (var a in [0,1,2]) {
                     if (listInListOfLists(r, keep)){
                         console.log(" -- for " + candidate + ", found rotation: " + r);
                         duplicateFound=true;
+                        break;
                     }
                 }
                 if (!duplicateFound && !listInListOfLists(candidate, keep)){
@@ -213,5 +212,8 @@ fs.writeFile(mainFile, mainDoc.build(), function(err) {
     }
 });
 
-let test =  [1,2,2,2];
-console.log("for test: " + test + " rotation: " + rotate(test));
+let test =  [0,0,1,1];
+console.log("for test: " + test + " rotations: " + (rotate(test)));
+console.log("for test: " + test + " rotations: " + (rotate(rotate(test))));
+
+console.log("for test: " + test + " rotations: " + printListOfLists(allRotations(test)));
