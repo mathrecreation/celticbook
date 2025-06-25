@@ -76,6 +76,18 @@ function flip(list){
     }
     return flipped;
 }
+function hreflect4(list){
+    let hreflected =[list[2],list[1],list[0],list[3]];
+    return hreflected;
+}
+function vreflect4(list){
+    let vreflected =[list[0],list[3],list[3],list[1]];
+    return vreflected;
+}
+function allReflections(list){
+    return [hreflect4(list), vreflect4(list)];
+}
+
 // rotates a celtic cell signature by shift and flip
 function rotate(list){
     return flip(shift(list));
@@ -110,6 +122,7 @@ for (var a in [0,1,2]) {
     }
 }
 console.log("total possible tuples: " + allTuples.length);
+console.log("removing rotations");
 for (let i = 0; i < allTuples.length; i++){
     let candidate = allTuples[i];
     console.log("testing " + candidate);
@@ -127,11 +140,30 @@ for (let i = 0; i < allTuples.length; i++){
     if (!duplicateFound && !listInListOfLists(candidate, keep)){
         keep.push(coerce(candidate));
     }
-
 }
-
-console.log(keep.length)
-
+console.log("tuples with rotations removed: "+ keep.length);
+console.log("removing reflections");
+let reflectsRemoved = []
+for (let i = 0; i < keep.length; i++){
+    let candidate = keep[i];
+    console.log("testing " + candidate);
+    let reflections = allReflections(candidate.slice());
+    console.log(" - for " + candidate +" reflections are: " + printListOfLists(reflections));
+    let duplicateFound = false;
+    for (let i = 0; i < reflections.length; i++){
+        let r = reflections[i];
+        if (listInListOfLists(r, reflectsRemoved)){
+            console.log(" -- for " + candidate + ", found rotation: " + r);
+            duplicateFound=true;
+            break;
+        }
+    }
+    if (!duplicateFound && !listInListOfLists(candidate, reflectsRemoved)){
+        reflectsRemoved.push(coerce(candidate));
+    }
+}
+console.log("reflections removed: " + reflectsRemoved.length);
+keep = reflectsRemoved;
 // generate 2x2 cell from its signature
 function twoXtwoLaTeX(fourTuple){
     let grid = new celtic.Grid(3,3);
