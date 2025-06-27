@@ -121,18 +121,30 @@ for (var a in [0,1,2]) {
         }
     }
 }
-console.log("total possible tuples: " + allTuples.length);
+// console.log("total possible tuples: " + allTuples.length);
+let keep1 = [];
+console.log("removing duplicates");
+for (let i = 0; i < allTuples.length; i++){
+    let candidate = allTuples[i];
+   // console.log("testing " + candidate);
+    if (!listInListOfLists(candidate, keep1)){
+        keep1.push(coerce(candidate));
+    }
+}
+console.log("with duplicates removed: " + keep1.length);
+
+
 console.log("removing rotations");
 for (let i = 0; i < allTuples.length; i++){
     let candidate = allTuples[i];
-    console.log("testing " + candidate);
+ //   console.log("testing " + candidate);
     let rotations = allRotations(candidate.slice());
-    console.log(" - for " + candidate +" rotations are: " + printListOfLists(rotations));
+ //   console.log(" - for " + candidate +" rotations are: " + printListOfLists(rotations));
     let duplicateFound = false;
     for (let i = 0; i < rotations.length; i++){
         let r = rotations[i];
         if (listInListOfLists(r, keep)){
-            console.log(" -- for " + candidate + ", found rotation: " + r);
+   //         console.log(" -- for " + candidate + ", found rotation: " + r);
             duplicateFound=true;
             break;
         }
@@ -146,20 +158,20 @@ console.log("removing reflections");
 let reflectsRemoved = []
 for (let i = 0; i < keep.length; i++){
     let candidate = keep[i];
-    console.log("testing " + candidate);
+    //console.log("testing " + candidate);
     let reflections = allReflections(candidate.slice());
-    console.log(" - for " + candidate +" reflections are: " + printListOfLists(reflections));
+    //console.log(" - for " + candidate +" reflections are: " + printListOfLists(reflections));
     let duplicateFound = false;
     for (let i = 0; i < reflections.length; i++){
         let r = reflections[i];
         if (listInListOfLists(r, reflectsRemoved)){
-            console.log(" -- for " + candidate + ", found reflection: " + r);
+         //   console.log(" -- for " + candidate + ", found reflection: " + r);
             duplicateFound=true;
             break;
         }
     }
     if (!duplicateFound && !listInListOfLists(candidate, reflectsRemoved)){
-        console.log("--- adding " +candidate );
+       // console.log("--- adding " +candidate );
         reflectsRemoved.push(coerce(candidate));
     }
 }
@@ -219,7 +231,6 @@ try {
 let mainDoc = new celtic.LaTeXDoc();
 let mainFile = 'ch1_list.tex';
 
-
 for( let i = 0; i < keep.length; i++){
     let sig = keep[i];
     let knot = twoXtwoLaTeX(sig);
@@ -243,8 +254,44 @@ fs.writeFile(mainFile, mainDoc.build(), function(err) {
     }
 });
 
-let test =  [0,0,1,1];
-console.log("for test: " + test + " rotations: " + (rotate(test)));
-console.log("for test: " + test + " rotations: " + (rotate(rotate(test))));
+console.log("---------------------------");
+console.log("Chapter 2:ALL celtic 2x2 cells");
+console.log("---------------------------");
 
-console.log("for test: " + test + " rotations: " + printListOfLists(allRotations(test)));
+//set up folder for files
+folderName = 'ch2_generated_files';
+console.log("building at " + getTimestamp ());
+console.log("creating folder if needed");
+try {
+    if (!fs.existsSync(folderName)) {
+        fs.mkdirSync(folderName);
+    }
+}	catch (err) {
+    console.error(err);
+}
+
+mainDoc = new celtic.LaTeXDoc();
+mainFile = 'ch2_list.tex';
+
+for( let i = 0; i < keep1.length; i++){
+    let sig = keep1[i];
+    let knot = twoXtwoLaTeX(sig);
+    let childFile = folderName+"/"+signature(sig)+".tex";
+    mainDoc.input(childFile);
+
+    fs.writeFile(childFile, knot, function(err) {
+        if(err) {
+            return console.log("There was an error" + err);
+            console.log("exiting");
+            process.exit(1);
+        }
+    });
+}
+
+fs.writeFile(mainFile, mainDoc.build(), function(err) {
+    if(err) {
+        return console.log("There was an error" + err);
+        console.log("exiting");
+        process.exit(1);
+    }
+});
