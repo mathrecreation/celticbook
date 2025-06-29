@@ -128,7 +128,11 @@ for (let i = 0; i < allTuples.length; i++){
     let candidate = allTuples[i];
    // console.log("testing " + candidate);
     if (!listInListOfLists(candidate, keep1)){
-        keep1.push(coerce(candidate));
+        //keep1.push(coerce(candidate));
+        let rotations = allRotations(candidate.slice());
+        for (let j = 0; j < rotations.length; j++){
+            keep1.push(coerce(rotations[j]));
+        }
     }
 }
 console.log("with duplicates removed: " + keep1.length);
