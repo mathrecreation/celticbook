@@ -94,12 +94,32 @@ function rotate(list){
 }
 // generates all other rotations of a given signature
 function allRotations(list){
-    let rotations = [
-        list,
-        rotate(list),
-        rotate(rotate(list)),
-        rotate(rotate(rotate(list)))
-    ]
+    let rotations = [list]
+    let r1 =  rotate(list);
+    if (same(r1,list)){
+        return rotations;
+    } else {
+        rotations.push(r1);
+    }
+    r1 = rotate(r1);
+    if (same(r1,list)){
+        return rotations;
+    } else {
+        rotations.push(r1);
+    }
+    r1 = rotate(r1);
+    if (same(r1,list)){
+        return rotations;
+    } else {
+        rotations.push(r1);
+    }
+    return rotations;
+    // let rotations = [
+    //     list,
+    //     rotate(list),
+    //     rotate(rotate(list)),
+    //     rotate(rotate(rotate(list)))
+    // ]
     return rotations;
 }
 
