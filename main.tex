@@ -1,5 +1,6 @@
 \documentclass{tufte-book}
 \input{preamble.tex}
+\usepackage{adjustbox}
 
 % Book metadata
 \title{Generative Celtic}
@@ -29,8 +30,9 @@
 
 \newpage
 
+\scalebox{0.6}{
+\begin{minipage}{18cm}
 \input{ch2_formatted}
-
-\newpage
-\input{ch2_list}
+\end{minipage}
+}
 \end{document}
