@@ -176,7 +176,8 @@ for (let i = 0; i < keep.length; i++){
     }
 }
 console.log("reflections removed: " + reflectsRemoved.length);
-keep = reflectsRemoved;
+//keep = reflectsRemoved; // let's not remove reflections
+
 // generate 2x2 cell from its signature
 function twoXtwoLaTeX(fourTuple){
     let grid = new celtic.Grid(3,3);
