@@ -397,8 +397,8 @@ try {
 mainDoc = new celtic.LaTeXDoc();
 mainFile = 'ch4_list.tex';
 
-for( let i = 0; i < reflectsRemoved.length; i++){
-    let sig = reflectsRemoved[i];
+for( let i = 0; i < keep.length; i++){
+    let sig = keep[i];
     let knot = twoXthreeLaTeX(sig);
     let childFile = folderName+"/"+signature(sig)+".tex";
     mainDoc.input(childFile);
