@@ -122,6 +122,38 @@ for (let i = 0; i < 7; i++){
     sixCrossings.push(tuple1);
 }
 
+let fiveCrossingPairs = [];
+for (let i = 0; i < 7; i++){
+    for (let j = i; j < 7; j++){
+        fiveCrossingPairs.push([i,j]);
+    }
+}
+let fiveCrossings = [];
+for (let i = 0; i < fiveCrossingPairs.length; i++){
+    let pair = fiveCrossingPairs[i];
+
+    let tuple1 = baseTuple.slice();
+    tuple1[pair[0]] = 1;
+    tuple1[pair[1]] = 1;
+    fiveCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    tuple1[pair[0]] = 1;
+    tuple1[pair[1]] = 2;
+    fiveCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    tuple1[pair[0]] = 2;
+    tuple1[pair[1]] = 1;
+    fiveCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    tuple1[pair[0]] = 2;
+    tuple1[pair[1]] = 2;
+    fiveCrossings.push(tuple1);
+}
+
+
 console.log(printListOfLists(sixCrossings));
 console.log((sixCrossings.length));
 
@@ -189,7 +221,7 @@ console.log("reflections removed: " + reflectsRemoved.length);
 //keep = reflectsRemoved; // let's not remove reflections
 // generate 2x3 cell from its signature
 function twoXthreeLaTeX(septTuple){
-    console.log("building: " + septTuple);
+    //console.log("building: " + septTuple);
     let grid = new celtic.Grid(3,4);
     grid.initialize();
     grid.borders();
@@ -259,6 +291,111 @@ try {
 
 let mainDoc = new celtic.LaTeXDoc();
 let mainFile = 'ch3_list.tex';
+
+for( let i = 0; i < keep.length; i++){
+    let sig = keep[i];
+    let knot = twoXthreeLaTeX(sig);
+    let childFile = folderName+"/"+signature(sig)+".tex";
+    mainDoc.input(childFile);
+
+    fs.writeFile(childFile, knot, function(err) {
+        if(err) {
+            return console.log("There was an error" + err);
+            console.log("exiting");
+            process.exit(1);
+        }
+    });
+}
+
+
+fs.writeFile(mainFile, mainDoc.build(), function(err) {
+    if(err) {
+        return console.log("There was an error" + err);
+        console.log("exiting");
+        process.exit(1);
+    }
+});
+
+/**
+ * Chapter 4
+ */
+
+allTuples = fiveCrossings;
+// console.log("total possible tuples: " + allTuples.length);
+keep1 = [];
+console.log("removing duplicates");
+for (let i = 0; i < allTuples.length; i++){
+    let candidate = allTuples[i];
+    // console.log("testing " + candidate);
+    if (!listInListOfLists(candidate, keep1)){
+        //keep1.push(coerce(candidate));
+        let rotations = allRotations(candidate.slice());
+        for (let j = 0; j < rotations.length; j++){
+            keep1.push(coerce(rotations[j]));
+        }
+    }
+}
+console.log("with duplicates removed: " + keep1.length);
+
+
+console.log("removing rotations");
+for (let i = 0; i < allTuples.length; i++){
+    let candidate = allTuples[i];
+    //   console.log("testing " + candidate);
+    let rotations = allRotations(candidate.slice());
+    //   console.log(" - for " + candidate +" rotations are: " + printListOfLists(rotations));
+    let duplicateFound = false;
+    for (let i = 0; i < rotations.length; i++){
+        let r = rotations[i];
+        if (listInListOfLists(r, keep)){
+            //         console.log(" -- for " + candidate + ", found rotation: " + r);
+            duplicateFound=true;
+            break;
+        }
+    }
+    if (!duplicateFound && !listInListOfLists(candidate, keep)){
+        keep.push(coerce(candidate));
+    }
+}
+console.log("tuples with rotations removed: "+ keep.length);
+
+console.log("removing reflections");
+reflectsRemoved = []
+for (let i = 0; i < keep.length; i++){
+    let candidate = keep[i];
+    //console.log("testing " + candidate);
+    let reflections = allReflections(candidate.slice());
+    //console.log(" - for " + candidate +" reflections are: " + printListOfLists(reflections));
+    let duplicateFound = false;
+    for (let i = 0; i < reflections.length; i++){
+        let r = reflections[i];
+        if (listInListOfLists(r, reflectsRemoved)){
+            //   console.log(" -- for " + candidate + ", found reflection: " + r);
+            duplicateFound=true;
+            break;
+        }
+    }
+    if (!duplicateFound && !listInListOfLists(candidate, reflectsRemoved)){
+        // console.log("--- adding " +candidate );
+        reflectsRemoved.push(coerce(candidate));
+    }
+}
+console.log("reflections removed: " + reflectsRemoved.length);
+
+//set up folder for files
+folderName = 'ch4_generated_files';
+console.log("building at " + getTimestamp ());
+console.log("creating folder if needed");
+try {
+    if (!fs.existsSync(folderName)) {
+        fs.mkdirSync(folderName);
+    }
+}	catch (err) {
+    console.error(err);
+}
+
+mainDoc = new celtic.LaTeXDoc();
+mainFile = 'ch4_list.tex';
 
 for( let i = 0; i < keep.length; i++){
     let sig = keep[i];
