@@ -236,8 +236,6 @@ function twoXthreeLaTeX(septTuple){
     } else if (seventh === 2){
         grid.from(3,1).to(3,3);
     }
-
-
     let knotDisplay = new celtic.PositiveKnotDisplay(grid, 20, 'white', 'darkblue');
     knotDisplay.init();
     return knotDisplay.buildTikZ();
@@ -304,7 +302,6 @@ try {
 }
 
 mainDoc = new celtic.LaTeXDoc();
-mainFile = 'ch2_list.tex';
 
 for( let i = 0; i < keep1.length; i++){
     let sig = keep1[i];
