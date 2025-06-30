@@ -275,48 +275,6 @@ for( let i = 0; i < keep.length; i++){
     });
 }
 
-fs.writeFile(mainFile, mainDoc.build(), function(err) {
-    if(err) {
-        return console.log("There was an error" + err);
-        console.log("exiting");
-        process.exit(1);
-    }
-});
-
-process.exit(0);
-
-console.log("---------------------------");
-console.log("Chapter 2:ALL celtic 2x2 cells");
-console.log("---------------------------");
-
-//set up folder for files
-folderName = 'ch2_generated_files';
-console.log("building at " + getTimestamp ());
-console.log("creating folder if needed");
-try {
-    if (!fs.existsSync(folderName)) {
-        fs.mkdirSync(folderName);
-    }
-}	catch (err) {
-    console.error(err);
-}
-
-mainDoc = new celtic.LaTeXDoc();
-
-for( let i = 0; i < keep1.length; i++){
-    let sig = keep1[i];
-    let knot = twoXtwoLaTeX(sig);
-    let childFile = folderName+"/"+signature(sig)+".tex";
-    mainDoc.input(childFile);
-
-    fs.writeFile(childFile, knot, function(err) {
-        if(err) {
-            return console.log("There was an error" + err);
-            console.log("exiting");
-            process.exit(1);
-        }
-    });
-}
 
 fs.writeFile(mainFile, mainDoc.build(), function(err) {
     if(err) {
