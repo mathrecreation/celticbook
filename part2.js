@@ -124,7 +124,7 @@ for (let i = 0; i < 7; i++){
 
 let fiveCrossingPairs = [];
 for (let i = 0; i < 7; i++){
-    for (let j = i; j < 7; j++){
+    for (let j = i+1; j < 7; j++){
         fiveCrossingPairs.push([i,j]);
     }
 }
@@ -323,6 +323,7 @@ fs.writeFile(mainFile, mainDoc.build(), function(err) {
 allTuples = fiveCrossings;
 // console.log("total possible tuples: " + allTuples.length);
 keep1 = [];
+keep =[];
 console.log("removing duplicates");
 for (let i = 0; i < allTuples.length; i++){
     let candidate = allTuples[i];
@@ -336,7 +337,6 @@ for (let i = 0; i < allTuples.length; i++){
     }
 }
 console.log("with duplicates removed: " + keep1.length);
-
 
 console.log("removing rotations");
 for (let i = 0; i < allTuples.length; i++){
@@ -397,8 +397,8 @@ try {
 mainDoc = new celtic.LaTeXDoc();
 mainFile = 'ch4_list.tex';
 
-for( let i = 0; i < keep.length; i++){
-    let sig = keep[i];
+for( let i = 0; i < reflectsRemoved.length; i++){
+    let sig = reflectsRemoved[i];
     let knot = twoXthreeLaTeX(sig);
     let childFile = folderName+"/"+signature(sig)+".tex";
     mainDoc.input(childFile);
