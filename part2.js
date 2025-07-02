@@ -102,9 +102,6 @@ function allRotations(list){
  * Chapter 1 -- the celtic 2x3 cells
  */
 
-let keep = []; // the signatures to keep
-let exclude = []; // the rotated variants
-
 // generate all signatures excluding rotated versions
 let allTuples= [];
 /**
@@ -153,72 +150,66 @@ for (let i = 0; i < fiveCrossingPairs.length; i++){
     fiveCrossings.push(tuple1);
 }
 
+function removeDuplicates(allPossibles){
+    let reduced = [];
+    for (let i = 0; i < allPossibles.length; i++){
+        let candidate = allPossibles[i];
+        if (!listInListOfLists(candidate, reduced)){
+            let rotations = allRotations(candidate.slice());
+            for (let j = 0; j < rotations.length; j++){
+                reduced.push(coerce(rotations[j]));
+            }
+        }
+    }
+    return reduced;
+}
+
+function removeRotations(allPossibles){
+    let reduced = [];
+    for (let i = 0; i < allPossibles.length; i++){
+        let candidate = allPossibles[i];
+        let rotations = allRotations(candidate.slice());
+        let duplicateFound = false;
+        for (let i = 0; i < rotations.length; i++){
+            let r = rotations[i];
+            if (listInListOfLists(r, reduced)){
+                //         console.log(" -- for " + candidate + ", found rotation: " + r);
+                duplicateFound=true;
+                break;
+            }
+        }
+        if (!duplicateFound && !listInListOfLists(candidate, reduced)){
+            reduced.push(coerce(candidate));
+        }
+    }
+    return reduced;
+}
+
+function removeReflections(allPossibles){
+    let reduced = []
+    for (let i = 0; i < allPossibles.length; i++){
+        let candidate = allPossibles[i];
+        let reflections = allReflections(candidate.slice());
+        let duplicateFound = false;
+        for (let i = 0; i < reflections.length; i++){
+            let r = reflections[i];
+            if (listInListOfLists(r, reduced)){
+                //   console.log(" -- for " + candidate + ", found reflection: " + r);
+                duplicateFound=true;
+                break;
+            }
+        }
+        if (!duplicateFound && !listInListOfLists(candidate, reduced)){
+            // console.log("--- adding " +candidate );
+            reduced.push(coerce(candidate));
+        }
+    }
+    return reduced;
+}
 
 console.log(printListOfLists(sixCrossings));
 console.log((sixCrossings.length));
 
-allTuples = sixCrossings;
-// console.log("total possible tuples: " + allTuples.length);
-let keep1 = [];
-console.log("removing duplicates");
-for (let i = 0; i < allTuples.length; i++){
-    let candidate = allTuples[i];
-    // console.log("testing " + candidate);
-    if (!listInListOfLists(candidate, keep1)){
-        //keep1.push(coerce(candidate));
-        let rotations = allRotations(candidate.slice());
-        for (let j = 0; j < rotations.length; j++){
-            keep1.push(coerce(rotations[j]));
-        }
-    }
-}
-console.log("with duplicates removed: " + keep1.length);
-
-
-console.log("removing rotations");
-for (let i = 0; i < allTuples.length; i++){
-    let candidate = allTuples[i];
-    //   console.log("testing " + candidate);
-    let rotations = allRotations(candidate.slice());
-    //   console.log(" - for " + candidate +" rotations are: " + printListOfLists(rotations));
-    let duplicateFound = false;
-    for (let i = 0; i < rotations.length; i++){
-        let r = rotations[i];
-        if (listInListOfLists(r, keep)){
-            //         console.log(" -- for " + candidate + ", found rotation: " + r);
-            duplicateFound=true;
-            break;
-        }
-    }
-    if (!duplicateFound && !listInListOfLists(candidate, keep)){
-        keep.push(coerce(candidate));
-    }
-}
-console.log("tuples with rotations removed: "+ keep.length);
-
-console.log("removing reflections");
-let reflectsRemoved = []
-for (let i = 0; i < keep.length; i++){
-    let candidate = keep[i];
-    //console.log("testing " + candidate);
-    let reflections = allReflections(candidate.slice());
-    //console.log(" - for " + candidate +" reflections are: " + printListOfLists(reflections));
-    let duplicateFound = false;
-    for (let i = 0; i < reflections.length; i++){
-        let r = reflections[i];
-        if (listInListOfLists(r, reflectsRemoved)){
-            //   console.log(" -- for " + candidate + ", found reflection: " + r);
-            duplicateFound=true;
-            break;
-        }
-    }
-    if (!duplicateFound && !listInListOfLists(candidate, reflectsRemoved)){
-        // console.log("--- adding " +candidate );
-        reflectsRemoved.push(coerce(candidate));
-    }
-}
-console.log("reflections removed: " + reflectsRemoved.length);
-//keep = reflectsRemoved; // let's not remove reflections
 // generate 2x3 cell from its signature
 function twoXthreeLaTeX(septTuple){
     //console.log("building: " + septTuple);
@@ -292,7 +283,22 @@ try {
 let mainDoc = new celtic.LaTeXDoc();
 let mainFile = 'ch3_list.tex';
 
-keep=reflectsRemoved;
+allTuples = sixCrossings;
+// console.log("total possible tuples: " + allTuples.length);
+let keep = [];
+console.log("removing duplicates");
+keep = removeDuplicates(allTuples);
+console.log("with duplicates removed: " + keep.length);
+
+console.log("removing rotations");
+keep = removeRotations(keep);
+console.log("tuples with rotations removed: "+ keep.length);
+
+console.log("removing reflections");
+keep = removeReflections(keep);
+
+console.log("reflections removed: " + keep.length);
+
 for( let i = 0; i < keep.length; i++){
     let sig = keep[i];
     let knot = twoXthreeLaTeX(sig);
@@ -323,66 +329,20 @@ fs.writeFile(mainFile, mainDoc.build(), function(err) {
 
 allTuples = fiveCrossings;
 // console.log("total possible tuples: " + allTuples.length);
-keep1 = [];
-keep =[];
 console.log("removing duplicates");
-for (let i = 0; i < allTuples.length; i++){
-    let candidate = allTuples[i];
-    // console.log("testing " + candidate);
-    if (!listInListOfLists(candidate, keep1)){
-        //keep1.push(coerce(candidate));
-        let rotations = allRotations(candidate.slice());
-        for (let j = 0; j < rotations.length; j++){
-            keep1.push(coerce(rotations[j]));
-        }
-    }
-}
-console.log("with duplicates removed: " + keep1.length);
+
+keep = removeDuplicates(allTuples);
+console.log("with duplicates removed: " + keep.length);
 
 console.log("removing rotations");
-for (let i = 0; i < allTuples.length; i++){
-    let candidate = allTuples[i];
-    //   console.log("testing " + candidate);
-    let rotations = allRotations(candidate.slice());
-    //   console.log(" - for " + candidate +" rotations are: " + printListOfLists(rotations));
-    let duplicateFound = false;
-    for (let i = 0; i < rotations.length; i++){
-        let r = rotations[i];
-        if (listInListOfLists(r, keep)){
-            //         console.log(" -- for " + candidate + ", found rotation: " + r);
-            duplicateFound=true;
-            break;
-        }
-    }
-    if (!duplicateFound && !listInListOfLists(candidate, keep)){
-        keep.push(coerce(candidate));
-    }
-}
+
+keep = removeRotations(keep);
 console.log("tuples with rotations removed: "+ keep.length);
 
 console.log("removing reflections");
-reflectsRemoved = []
-for (let i = 0; i < keep.length; i++){
-    let candidate = keep[i];
-    //console.log("testing " + candidate);
-    let reflections = allReflections(candidate.slice());
-    //console.log(" - for " + candidate +" reflections are: " + printListOfLists(reflections));
-    let duplicateFound = false;
-    for (let i = 0; i < reflections.length; i++){
-        let r = reflections[i];
-        if (listInListOfLists(r, reflectsRemoved)){
-            //   console.log(" -- for " + candidate + ", found reflection: " + r);
-            duplicateFound=true;
-            break;
-        }
-    }
-    if (!duplicateFound && !listInListOfLists(candidate, reflectsRemoved)){
-        // console.log("--- adding " +candidate );
-        reflectsRemoved.push(coerce(candidate));
-    }
-}
-console.log("reflections removed: " + reflectsRemoved.length);
-keep=reflectsRemoved;
+
+keep = removeReflections(keep);
+console.log("reflections removed: " + keep.length);
 //set up folder for files
 folderName = 'ch4_generated_files';
 console.log("building at " + getTimestamp ());
