@@ -103,11 +103,9 @@ function allRotations(list){
  */
 
 // generate all signatures excluding rotated versions
-let allTuples= [];
 /**
  *  We will only generate tuples with 5,6,7 crossings
  */
-let positions = [0,1,2,3,4,5,6];
 let baseTuple = [0,0,0,0,0,0,0];
 let sixCrossings = [];
 for (let i = 0; i < 7; i++){
@@ -283,11 +281,9 @@ try {
 let mainDoc = new celtic.LaTeXDoc();
 let mainFile = 'ch3_list.tex';
 
-allTuples = sixCrossings;
-// console.log("total possible tuples: " + allTuples.length);
 let keep = [];
 console.log("removing duplicates");
-keep = removeDuplicates(allTuples);
+keep = removeDuplicates(sixCrossings);
 console.log("with duplicates removed: " + keep.length);
 
 console.log("removing rotations");
@@ -327,11 +323,9 @@ fs.writeFile(mainFile, mainDoc.build(), function(err) {
  * Chapter 4
  */
 
-allTuples = fiveCrossings;
-// console.log("total possible tuples: " + allTuples.length);
 console.log("removing duplicates");
 
-keep = removeDuplicates(allTuples);
+keep = removeDuplicates(fiveCrossings);
 console.log("with duplicates removed: " + keep.length);
 
 console.log("removing rotations");
