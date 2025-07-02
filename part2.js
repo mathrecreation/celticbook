@@ -126,7 +126,6 @@ for (let i = 0; i < 7; i++){
 let fiveCrossings = [];
 for (let i = 0; i < fiveCrossingPairs.length; i++){
     let pair = fiveCrossingPairs[i];
-
     let tuple1 = baseTuple.slice();
     tuple1[pair[0]] = 1;
     tuple1[pair[1]] = 1;
@@ -324,17 +323,14 @@ fs.writeFile(mainFile, mainDoc.build(), function(err) {
  */
 
 console.log("removing duplicates");
-
 keep = removeDuplicates(fiveCrossings);
 console.log("with duplicates removed: " + keep.length);
 
 console.log("removing rotations");
-
 keep = removeRotations(keep);
 console.log("tuples with rotations removed: "+ keep.length);
 
 console.log("removing reflections");
-
 keep = removeReflections(keep);
 console.log("reflections removed: " + keep.length);
 //set up folder for files
@@ -351,6 +347,120 @@ try {
 
 mainDoc = new celtic.LaTeXDoc();
 mainFile = 'ch4_list.tex';
+
+for( let i = 0; i < keep.length; i++){
+    let sig = keep[i];
+    let knot = twoXthreeLaTeX(sig);
+    let childFile = folderName+"/"+signature(sig)+".tex";
+    mainDoc.input(childFile);
+
+    fs.writeFile(childFile, knot, function(err) {
+        if(err) {
+            return console.log("There was an error" + err);
+            console.log("exiting");
+            process.exit(1);
+        }
+    });
+}
+
+
+fs.writeFile(mainFile, mainDoc.build(), function(err) {
+    if(err) {
+        return console.log("There was an error" + err);
+        console.log("exiting");
+        process.exit(1);
+    }
+});
+
+/**
+ *  Chapter 5
+ */
+
+let fourCrossingTriplets = [];
+for (let i = 0; i < 7; i++) {
+    for (let j = i + 1; j < 7; j++) {
+        for (let k = j + 1; k < 7; k++) {
+            fourCrossingTriplets.push([i, j, k]);
+        }
+    }
+}
+let fourCrossings = [];
+for (let i = 0; i < fourCrossingTriplets.length; i++){
+    let triplet = fourCrossingTriplets[i];
+    let tuple1 = baseTuple.slice();
+    tuple1[triplet[0]] = 1;
+    tuple1[triplet[1]] = 1;
+    tuple1[triplet[2]] = 1;
+
+    fourCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    tuple1[triplet[0]] = 1;
+    tuple1[triplet[1]] = 2;
+    tuple1[triplet[1]] = 1;
+    fourCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    tuple1[triplet[0]] = 2;
+    tuple1[triplet[1]] = 1;
+    tuple1[triplet[1]] = 1;
+    fourCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    tuple1[triplet[0]] = 2;
+    tuple1[triplet[1]] = 2;
+    tuple1[triplet[1]] = 1;
+    fourCrossings.push(tuple1);
+    ///next set
+    tuple1[triplet[0]] = 1;
+    tuple1[triplet[1]] = 1;
+    tuple1[triplet[2]] = 2;
+
+    fourCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    tuple1[triplet[0]] = 1;
+    tuple1[triplet[1]] = 2;
+    tuple1[triplet[1]] = 2;
+    fourCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    tuple1[triplet[0]] = 2;
+    tuple1[triplet[1]] = 1;
+    tuple1[triplet[1]] = 2;
+    fourCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    tuple1[triplet[0]] = 2;
+    tuple1[triplet[1]] = 2;
+    tuple1[triplet[1]] = 2;
+    fourCrossings.push(tuple1);
+}
+console.log("removing duplicates");
+keep = removeDuplicates(fourCrossings);
+console.log("with duplicates removed: " + keep.length);
+
+console.log("removing rotations");
+keep = removeRotations(keep);
+console.log("tuples with rotations removed: "+ keep.length);
+
+console.log("removing reflections");
+keep = removeReflections(keep);
+console.log("reflections removed: " + keep.length);
+//set up folder for files
+folderName = 'ch5_generated_files';
+console.log("building at " + getTimestamp ());
+console.log("creating folder if needed");
+try {
+    if (!fs.existsSync(folderName)) {
+        fs.mkdirSync(folderName);
+    }
+}	catch (err) {
+    console.error(err);
+}
+
+mainDoc = new celtic.LaTeXDoc();
+mainFile = 'ch5_list.tex';
 
 for( let i = 0; i < keep.length; i++){
     let sig = keep[i];
