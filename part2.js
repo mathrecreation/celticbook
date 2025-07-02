@@ -71,11 +71,11 @@ function shift7(list){
 }
 
 function hreflect7(list){
-    let hreflected =[list[4],list[5],list[6],list[2],list[1],list[0],list[6]];
+    let hreflected =[list[4],list[3],list[2],list[1],list[0],list[5],list[6]];
     return hreflected;
 }
 function vreflect7(list){
-    let vreflected =[list[2],list[1],list[0],list[5],list[4],list[3],list[6]];
+    let vreflected =[list[1],list[0],list[5],list[4],list[3],list[2],list[6]];
     return vreflected;
 }
 function allReflections(list){
