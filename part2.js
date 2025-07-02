@@ -292,6 +292,7 @@ try {
 let mainDoc = new celtic.LaTeXDoc();
 let mainFile = 'ch3_list.tex';
 
+keep=reflectsRemoved;
 for( let i = 0; i < keep.length; i++){
     let sig = keep[i];
     let knot = twoXthreeLaTeX(sig);
@@ -381,7 +382,7 @@ for (let i = 0; i < keep.length; i++){
     }
 }
 console.log("reflections removed: " + reflectsRemoved.length);
-
+keep=reflectsRemoved;
 //set up folder for files
 folderName = 'ch4_generated_files';
 console.log("building at " + getTimestamp ());
