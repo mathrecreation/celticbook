@@ -1779,6 +1779,7 @@ try{
     module.exports.Grid = Grid;
     module.exports.PositiveKnotDisplay = PositiveKnotDisplay;
     module.exports.LaTeXDoc = LaTeXDoc;
+    module.exports.loopCount = loopCount;
 } catch(err){
     console.log("non-node execution context");
 }

@@ -200,10 +200,16 @@ for (let i = 0; i < keep.length; i++){
     }
 }
 console.log("reflections removed: " + reflectsRemoved.length);
-//keep = reflectsRemoved; // let's not remove reflections
+
+function addToDictionary(rank, item, dictionary){
+    if(dictionary[rank] === undefined){
+        console.error("dictionary not initialized");
+    }
+    dictionary[rank].push(item);
+}
 
 // generate 2x2 cell from its signature
-function twoXtwoLaTeX(fourTuple){
+function twoXtwoLaTeX(fourTuple, loopList){
     let grid = new celtic.Grid(3,3);
     grid.initialize();
     grid.borders();
@@ -233,8 +239,12 @@ function twoXtwoLaTeX(fourTuple){
         grid.from(1,1).to(1,3);
     }
     let knotDisplay = new celtic.PositiveKnotDisplay(grid, 20, 'white', 'darkblue');
+    console.log("loops for " + fourTuple +": " + celtic.loopCount(grid));
+
     knotDisplay.init();
-    return knotDisplay.buildTikZ();
+    let result = knotDisplay.buildTikZ();
+    addToDictionary(celtic.loopCount(grid), fourTuple,loopList);
+    return result;
 }
 
 console.log("---------------------------");
@@ -256,9 +266,12 @@ try {
 let mainDoc = new celtic.LaTeXDoc();
 let mainFile = 'ch1_list.tex';
 
+let loopDictionary = [[],[],[],[],[]];
+
+//create individual files, main listing, and loop dictionary
 for( let i = 0; i < keep.length; i++){
     let sig = keep[i];
-    let knot = twoXtwoLaTeX(sig);
+    let knot = twoXtwoLaTeX(sig,loopDictionary);
     let childFile = folderName+"/"+signature(sig)+".tex";
     mainDoc.input(childFile);
 
@@ -279,6 +292,28 @@ fs.writeFile(mainFile, mainDoc.build(), function(err) {
     }
 });
 
+let loopDoc = new celtic.LaTeXDoc();
+for( let i = 0; i < loopDictionary.length; i++) {
+    if (loopDictionary[i].length > 0) {
+        loopDoc.command("section", "patterns with " + i + " loops");
+        for (let j = 0; j < loopDictionary[i].length; j++) {
+            let sig = loopDictionary[i][j];
+            let childFile = folderName + "/" + signature(sig) + ".tex";
+            loopDoc.input(childFile);
+        }
+    }
+}
+
+let loopFile = "ch1_loops.tex"
+fs.writeFile(loopFile, loopDoc.build(), function(err) {
+        if(err) {
+            return console.log("There was an error" + err);
+            console.log("exiting");
+            process.exit(1);
+        }
+    });
+
+
 console.log("---------------------------");
 console.log("Chapter 2:ALL celtic 2x2 cells");
 console.log("---------------------------");
@@ -298,9 +333,10 @@ try {
 mainDoc = new celtic.LaTeXDoc();
 mainFile = 'ch2_list.tex';
 
+loopDictionary = [[],[],[],[],[]];
 for( let i = 0; i < keep1.length; i++){
     let sig = keep1[i];
-    let knot = twoXtwoLaTeX(sig);
+    let knot = twoXtwoLaTeX(sig,loopDictionary);
     let childFile = folderName+"/"+signature(sig)+".tex";
     mainDoc.input(childFile);
 
