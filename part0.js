@@ -67,6 +67,17 @@ function oneXTwoC(){
     return knotDisplay.buildTikZ();
 }
 
+function twoXThree(){
+    let grid = new celtic.Grid(3,4);
+    grid.initialize();
+    grid.borders();
+    //connect nodes on secondary grid
+    let knotDisplay = new celtic.PositiveKnotDisplay(grid, 20, 'white', 'darkblue');
+    knotDisplay.init();
+    return knotDisplay.buildTikZ();
+}
+
+
 
 console.log("---------------------------");
 console.log("Chapter 0: misc diagrams ");
@@ -96,3 +107,5 @@ writeFile(folderName,name,oneXTwoB());
 name = "oneXTwoC";
 writeFile(folderName,name,oneXTwoC());
 
+name = "twoXThree";
+writeFile(folderName,name,twoXThree());
