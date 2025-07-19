@@ -503,19 +503,27 @@ fs.writeFile(mainFile, mainDoc.build(), function(err) {
 *  Chapter 6
 */
 
-let threeCrossingTriplets = [];
+
+
+function checkForDupTup(tup){
+    if (tup.length > 7){
+        console.log("problem: " + tup);
+    }
+}
+
+let threeCrossingQuads = [];
 for (let i = 0; i < 7; i++) {
     for (let j = i + 1; j < 7; j++) {
         for (let k = j + 1; k < 7; k++) {
-            for (let l = k + 1; k < 7; k++) {
-                threeCrossingTriplets.push([i, j, k, l]);
+            for (let l = k + 1; l < 7; l++) {
+                threeCrossingQuads.push([i, j, k, l]);
             }
         }
     }
 }
 let threeCrossings = [];
-for (let i = 0; i < threeCrossingTriplets.length; i++){
-    let quad = threeCrossingTriplets[i];
+for (let i = 0; i < threeCrossingQuads.length; i++){
+    let quad = threeCrossingQuads[i];
     let tuple1 = baseTuple.slice();
     //1
     tuple1[quad[0]] = 1;
@@ -653,6 +661,11 @@ for (let i = 0; i < threeCrossingTriplets.length; i++){
     threeCrossings.push(tuple1);
 
 }
+
+for(let i=0; i<threeCrossings.length; i++) {
+    checkForDupTup(threeCrossings[i]);
+}
+
 console.log("removing duplicates");
 keep = removeDuplicates(threeCrossings);
 console.log("with duplicates removed: " + keep.length);
