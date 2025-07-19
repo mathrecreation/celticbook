@@ -388,6 +388,7 @@ let fourCrossings = [];
 for (let i = 0; i < fourCrossingTriplets.length; i++){
     let triplet = fourCrossingTriplets[i];
     let tuple1 = baseTuple.slice();
+    //1
     tuple1[triplet[0]] = 1;
     tuple1[triplet[1]] = 1;
     tuple1[triplet[2]] = 1;
@@ -395,46 +396,58 @@ for (let i = 0; i < fourCrossingTriplets.length; i++){
     fourCrossings.push(tuple1);
 
     tuple1 = baseTuple.slice();
+    //2
     tuple1[triplet[0]] = 1;
     tuple1[triplet[1]] = 2;
     tuple1[triplet[2]] = 1;
     fourCrossings.push(tuple1);
 
     tuple1 = baseTuple.slice();
+    //3
+    tuple1[triplet[0]] = 1;
+    tuple1[triplet[1]] = 1;
+    tuple1[triplet[2]] = 2;
+    fourCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    //4
+    tuple1[triplet[0]] = 1;
+    tuple1[triplet[1]] = 2;
+    tuple1[triplet[2]] = 2;
+
+    fourCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    //5
     tuple1[triplet[0]] = 2;
     tuple1[triplet[1]] = 1;
+    tuple1[triplet[2]] = 1;
+
+    fourCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    //6
+    tuple1[triplet[0]] = 2;
+    tuple1[triplet[1]] = 1;
+    tuple1[triplet[2]] = 2;
+    fourCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+
+    //7
+    tuple1[triplet[0]] = 2;
+    tuple1[triplet[1]] = 2;
     tuple1[triplet[2]] = 1;
     fourCrossings.push(tuple1);
 
     tuple1 = baseTuple.slice();
-    tuple1[triplet[0]] = 2;
-    tuple1[triplet[1]] = 2;
-    tuple1[triplet[2]] = 1;
-    fourCrossings.push(tuple1);
-    ///next set
-    tuple1[triplet[0]] = 1;
-    tuple1[triplet[1]] = 1;
-    tuple1[triplet[2]] = 2;
 
-    fourCrossings.push(tuple1);
-
-    tuple1 = baseTuple.slice();
-    tuple1[triplet[0]] = 1;
-    tuple1[triplet[1]] = 2;
-    tuple1[triplet[2]] = 2;
-    fourCrossings.push(tuple1);
-
-    tuple1 = baseTuple.slice();
-    tuple1[triplet[0]] = 2;
-    tuple1[triplet[1]] = 1;
-    tuple1[triplet[2]] = 2;
-    fourCrossings.push(tuple1);
-
-    tuple1 = baseTuple.slice();
+    //8
     tuple1[triplet[0]] = 2;
     tuple1[triplet[1]] = 2;
     tuple1[triplet[2]] = 2;
     fourCrossings.push(tuple1);
+
 }
 console.log("removing duplicates");
 keep = removeDuplicates(fourCrossings);
