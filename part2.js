@@ -498,3 +498,207 @@ fs.writeFile(mainFile, mainDoc.build(), function(err) {
         process.exit(1);
     }
 });
+
+/**
+*  Chapter 6
+*/
+
+let threeCrossingTriplets = [];
+for (let i = 0; i < 7; i++) {
+    for (let j = i + 1; j < 7; j++) {
+        for (let k = j + 1; k < 7; k++) {
+            for (let l = k + 1; k < 7; k++) {
+                threeCrossingTriplets.push([i, j, k, l]);
+            }
+        }
+    }
+}
+let threeCrossings = [];
+for (let i = 0; i < threeCrossingTriplets.length; i++){
+    let quad = threeCrossingTriplets[i];
+    let tuple1 = baseTuple.slice();
+    //1
+    tuple1[quad[0]] = 1;
+    tuple1[quad[1]] = 1;
+    tuple1[quad[2]] = 1;
+    tuple1[quad[3]] = 1;
+
+    threeCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    //2
+    tuple1[quad[0]] = 1;
+    tuple1[quad[1]] = 2;
+    tuple1[quad[2]] = 1;
+    tuple1[quad[3]] = 1;
+
+    threeCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    //3
+    tuple1[quad[0]] = 1;
+    tuple1[quad[1]] = 1;
+    tuple1[quad[2]] = 2;
+    tuple1[quad[3]] = 1;
+    threeCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    //4
+    tuple1[quad[0]] = 1;
+    tuple1[quad[1]] = 2;
+    tuple1[quad[2]] = 2;
+    tuple1[quad[3]] = 1;
+    threeCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    //5
+    tuple1[quad[0]] = 2;
+    tuple1[quad[1]] = 1;
+    tuple1[quad[2]] = 1;
+    tuple1[quad[3]] = 1;
+    threeCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    //6
+    tuple1[quad[0]] = 2;
+    tuple1[quad[1]] = 1;
+    tuple1[quad[2]] = 2;
+    tuple1[quad[3]] = 1;
+
+    threeCrossings.push(tuple1);
+    tuple1 = baseTuple.slice();
+
+    //7
+    tuple1[quad[0]] = 2;
+    tuple1[quad[1]] = 2;
+    tuple1[quad[2]] = 1;
+    tuple1[quad[3]] = 1;
+
+    threeCrossings.push(tuple1);
+    tuple1 = baseTuple.slice();
+
+    //8
+    tuple1[quad[0]] = 2;
+    tuple1[quad[1]] = 2;
+    tuple1[quad[2]] = 2;
+    tuple1[quad[3]] = 1;
+
+    threeCrossings.push(tuple1);
+
+    //AND AGAIN
+    tuple1 = baseTuple.slice();
+    //1
+    tuple1[quad[0]] = 1;
+    tuple1[quad[1]] = 1;
+    tuple1[quad[2]] = 1;
+    tuple1[quad[3]] = 2;
+    threeCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    //2
+    tuple1[quad[0]] = 1;
+    tuple1[quad[1]] = 2;
+    tuple1[quad[2]] = 1;
+    tuple1[quad[3]] = 2;
+    threeCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    //3
+    tuple1[quad[0]] = 1;
+    tuple1[quad[1]] = 1;
+    tuple1[quad[2]] = 2;
+    tuple1[quad[3]] = 2;
+    threeCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    //4
+    tuple1[quad[0]] = 1;
+    tuple1[quad[1]] = 2;
+    tuple1[quad[2]] = 2;
+    tuple1[quad[3]] = 2;
+    threeCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    //5
+    tuple1[quad[0]] = 2;
+    tuple1[quad[1]] = 1;
+    tuple1[quad[2]] = 1;
+    tuple1[quad[3]] = 2;
+    threeCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+    //6
+    tuple1[quad[0]] = 2;
+    tuple1[quad[1]] = 1;
+    tuple1[quad[2]] = 2;
+    tuple1[quad[3]] = 2;
+    threeCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+
+    //7
+    tuple1[quad[0]] = 2;
+    tuple1[quad[1]] = 2;
+    tuple1[quad[2]] = 1;
+    tuple1[quad[3]] = 2;
+    threeCrossings.push(tuple1);
+
+    tuple1 = baseTuple.slice();
+
+    //8
+    tuple1[quad[0]] = 2;
+    tuple1[quad[1]] = 2;
+    tuple1[quad[2]] = 2;
+    tuple1[quad[3]] = 2;
+    threeCrossings.push(tuple1);
+
+}
+console.log("removing duplicates");
+keep = removeDuplicates(threeCrossings);
+console.log("with duplicates removed: " + keep.length);
+
+console.log("removing rotations");
+keep = removeRotations(keep);
+console.log("tuples with rotations removed: "+ keep.length);
+
+console.log("removing reflections");
+keep = removeReflections(keep);
+console.log("reflections removed: " + keep.length);
+//set up folder for files
+folderName = 'ch6_generated_files';
+console.log("building at " + getTimestamp ());
+console.log("creating folder if needed");
+try {
+    if (!fs.existsSync(folderName)) {
+        fs.mkdirSync(folderName);
+    }
+}	catch (err) {
+    console.error(err);
+}
+
+mainDoc = new celtic.LaTeXDoc();
+mainFile = 'ch6_list.tex';
+
+for( let i = 0; i < keep.length; i++){
+    let sig = keep[i];
+    let knot = twoXthreeLaTeX(sig);
+    let childFile = folderName+"/"+signature(sig)+".tex";
+    mainDoc.input(childFile);
+
+    fs.writeFile(childFile, knot, function(err) {
+        if(err) {
+            return console.log("There was an error" + err);
+            console.log("exiting");
+            process.exit(1);
+        }
+    });
+}
+
+
+fs.writeFile(mainFile, mainDoc.build(), function(err) {
+    if(err) {
+        return console.log("There was an error" + err);
+        console.log("exiting");
+        process.exit(1);
+    }
+});
